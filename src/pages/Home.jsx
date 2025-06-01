@@ -37,7 +37,7 @@ const Home = () => {
   };
 
   return (
-    <div className="bg-cover bg-center min-h-screen" style={{ backgroundImage: 'url("https://source.unsplash.com/1600x900/?travel")' }}>
+    <div className="bg-cover bg-center min-h-screen">
       <Navbar />
       <div className="pt-16 px-4">
         <SearchForm />

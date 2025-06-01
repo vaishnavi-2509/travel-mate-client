@@ -5,8 +5,38 @@ import React, { useState } from "react";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => setIsOpen(!isOpen);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState("user");
+  React.useEffect(() => {
+    const checkAuthToken = () => {
+      const token = localStorage.getItem("token");
+      console.log(token)
+      if (token) {
+        // Check if token exists and is valid
+        try {
+          // Basic check if token is present and not expired
+          const tokenData = JSON.parse(atob(token.split('.')[1])); // Decode JWT payload
+          console.log(tokenData)
+          const expirationTime = tokenData.exp * 1000; // Convert to milliseconds
+          
+          if (expirationTime > Date.now()) {
+            setIsLoggedIn(true);
+            setUserName(tokenData.name);
+          } else {
+            // Token expired
+            localStorage.removeItem("token");
+            setIsLoggedIn(false);
+          }
+        } catch (error) {
+          console.error("Error checking auth token:", error);
+          localStorage.removeItem("token");
+          setIsLoggedIn(false);
+        }
+      }
+    };
 
+    checkAuthToken();
+  }, []);
   return (
     <nav className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-3 md:py-4">
@@ -48,15 +78,15 @@ const Navbar = () => {
         {isLoggedIn ? (
           <div className="flex items-center gap-3">
             <CircleUserRound size={36} />
-            <div className="text-sm font-medium text-gray-800">
-              Welcome, User
+            <div className="text-sm font-medium ">
+              Welcome, <span className="text-2xl text-blue-600">{userName}</span>
             </div>
             <button
               onClick={() => {
                 localStorage.removeItem("token");
                 window.location.reload();
               }}
-              className="text-sm text-red-500 hover:underline"
+              className="text-sm text-white bg-red-500 px-4 py-2 rounded-full font-semibold shadow hover:bg-red-400 hover:scale-105 transition-transform"
             >
               Logout
             </button>

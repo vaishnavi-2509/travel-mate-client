@@ -67,7 +67,7 @@ const LoginPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-blue-800 to-blue-900 flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8">
         <h2 className="text-3xl font-bold text-center text-blue-700 mb-4">Login to Travel Mate</h2>
-        <p className="text-center text-gray-600 mb-6">Enter your credentials to continue</p>
+        
 
         {errorMessage && (
           <div className="bg-red-100 text-red-700 text-sm p-3 rounded-md mb-4 text-center">

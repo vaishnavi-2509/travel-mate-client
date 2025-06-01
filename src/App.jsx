@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import SearchForm from "./components/SearchForm";
 import PlaceCard from "./components/PlaceCard";
 import Itinerary from "./components/Itinerary";
 import SignupPage from "./components/SignupPage";
+import LoginPage from "./components/LoginPage";
 
 const places = [
   { name: "Paris", image: "./images/paris.jpg", description: "The city of lights and love with iconic landmarks like the Eiffel Tower, cafes, and charming streets.", location: "Paris, France" },
@@ -17,9 +18,9 @@ const places = [
 ];
 
 const Home = () => {
-  const scrollRef = useRef(null);
+  const scrollRef = React.useRef(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const scrollInterval = setInterval(() => {
       if (scrollRef.current) {
         scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
@@ -81,34 +82,21 @@ const Home = () => {
       <div className="bg-gray-100 min-h-screen py-12">
         <Itinerary />
       </div>
-      
     </div>
   );
 };
-
-const LoginPage = () => (
-  <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 px-4">
-    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full space-y-6">
-      <h2 className="text-3xl font-bold text-center text-blue-700">Login to Travel Mate</h2>
-      <form className="space-y-4">
-        <input type="email" placeholder="Email" className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        <input type="password" placeholder="Password" className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Login</button>
-      </form>
-      <p className="text-sm text-center">
-        Don’t have an account? <a href="/signup" className="text-blue-600 hover:underline">Sign up</a>
-      </p>
-    </div>
-  </div>
-);
 
 const App = () => {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600"><SignupPage /></div>} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={
+          <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600">
+            <SignupPage />
+          </div>
+        } />
       </Routes>
     </Router>
   );

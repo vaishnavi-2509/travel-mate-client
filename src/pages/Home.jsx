@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 import SearchForm from "../components/SearchForm";
 import PlaceCard from "../components/PlaceCard";
 import Itinerary from "../components/Itinerary";
-
+import Footer from "../components/Footer";
 
 const places = [
   { name: "Paris", image: "./images/paris.jpg", description: "The city of lights and love with iconic landmarks like the Eiffel Tower, cafes, and charming streets.", location: "Paris, France" },
@@ -80,6 +80,7 @@ const Home = () => {
       <div className="bg-gray-100 min-h-screen py-12">
         <Itinerary />
       </div>
+      <Footer />
     </div>
   );
 };

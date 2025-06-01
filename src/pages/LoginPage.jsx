@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../Auth/AuthContext.jsx";
+
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -24,7 +27,8 @@ const LoginPage = () => {
         }
       });
       if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
+        // localStorage.setItem('token', response.data.token); 
+        login(response.data.token);
         navigate("/");
       }
     } catch (error) {

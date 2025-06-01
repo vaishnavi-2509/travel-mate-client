@@ -1,17 +1,50 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:5500/api/users/login", formData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        navigate("/");
+      }
+    } catch (error) {
+      alert(JSON.stringify(error.response?.data || "Login failed"));
+    }
+  };
+
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 px-4">
       <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full space-y-6">
         <h2 className="text-3xl font-bold text-center text-blue-700">Login to Travel Mate</h2>
 
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm font-medium text-gray-700">Email</label>
             <input
               type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
               className="mt-1 block w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
               placeholder="you@example.com"
             />
@@ -21,6 +54,9 @@ const LoginPage = () => {
             <label className="block text-sm font-medium text-gray-700">Password</label>
             <input
               type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
               className="mt-1 block w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
               placeholder="••••••••"
             />

@@ -77,7 +77,7 @@ const SearchForm = () => {
 
   return (
       <div
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-10"
+      className="min-h-screen w-full flex flex-col items-center justify-center bg-cover bg-center text-white px-4 py-10 relative"
       style={{ backgroundImage: `url(${backgroundImage})` }}
       >
       <div className="max-w-2xl text-center mb-8 animate-fadeIn">

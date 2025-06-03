@@ -115,7 +115,7 @@ const AdminUpcomingTrips = () => {
   };
 
   return (
-    <div className="py-16 px-4 bg-gradient-to-r from-cyan-400 via-teal-200 to-cyan-400 min-h-screen flex flex-col items-center">
+    <div className="py-16 px-4 bg-gradient-to-r from-[#0891b2] via-[#2dd4bf] via-[#5eead4] to-[#f5d0a9] min-h-screen flex items-center">
       <div className="max-w-6xl mx-auto w-full">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-blue-700 mb-4">

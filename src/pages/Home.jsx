@@ -48,11 +48,11 @@ const Home = () => {
     </div>
       
 
-      <div className="bg-gray-100 min-h-screen py-12">
+      <div>
         <Itinerary />
       </div>
-      <section id="places" className="bg-gradient-to-r from-blue-50 to-indigo-50 py-14 px-4 relative overflow-hidden">
-        <h2 className="text-4xl font-extrabold text-center text-blue-800 mb-12 tracking-tight">
+      <section id="places" className="bg-white py-6 px-4 relative overflow-hidden">
+        <h2 className="text-4xl font-extrabold text-center text-blue-700 mb-12 tracking-tight">
           Top Places to Visit
         </h2>
 

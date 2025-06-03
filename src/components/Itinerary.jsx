@@ -463,7 +463,7 @@ export default function Itinerary() {
 
   // ============ RENDER ITINERARY LIST ============
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-4 px-4 md:px-8">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-16 px-4 md:px-8">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-10">
           <h2 className="text-4xl font-bold text-blue-700 mb-3">Discover Amazing Places</h2>

@@ -4,8 +4,6 @@ import LoginPage from "./pages/LoginPage";
 import Home from "./pages/Home";
 import AdminHome from "./admin/AdminHome";
 import { useAuth } from "./Auth/AuthContext";
-import { Navigate } from "react-router-dom";
-import LoadingSpinner from "./components/LoadingSpinner";
 
 const App = () => {
   const { isAdmin } = useAuth();
@@ -13,7 +11,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        {isAdmin ? <Route path="/" element={<AdminHome/>}/> :<Route path="/" element={<Home />} />}
         <Route
           path="/signup"
           element={
@@ -23,19 +21,6 @@ const App = () => {
           }
         />
         <Route path="/login" element={<LoginPage />} />
-        {/* //add admin here */}
-        <Route
-          path="/admin"
-          element={
-            isAdmin === null ? (
-              <LoadingSpinner />
-            ) : isAdmin ? (
-              <AdminHome />
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
       </Routes>
     </Router>
   );

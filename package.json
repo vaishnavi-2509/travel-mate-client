@@ -16,6 +16,7 @@
     "amadeus": "^11.0.0",
     "axios": "^1.9.0",
     "framer-motion": "^12.9.2",
+    "keen-slider": "^6.8.6",
     "lucide-react": "^0.501.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

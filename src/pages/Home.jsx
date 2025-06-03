@@ -4,6 +4,7 @@ import SearchForm from "../components/SearchForm";
 import PlaceCard from "../components/PlaceCard";
 import Itinerary from "../components/Itinerary";
 import Footer from "../components/Footer";
+import UpcomingTrips from "./UpcomingTrips";
 
 const places = [
   { name: "Paris", image: "./images/paris.jpg", description: "The city of lights and love with iconic landmarks like the Eiffel Tower, cafes, and charming streets.", location: "Paris, France" },
@@ -42,7 +43,14 @@ const Home = () => {
       <div className="pt-16 px-4">
         <SearchForm />
       </div>
+      <div>
+      <UpcomingTrips />
+    </div>
+      
 
+      <div className="bg-gray-100 min-h-screen py-12">
+        <Itinerary />
+      </div>
       <section id="places" className="bg-gradient-to-r from-blue-50 to-indigo-50 py-14 px-4 relative overflow-hidden">
         <h2 className="text-4xl font-extrabold text-center text-blue-800 mb-12 tracking-tight">
           Top Places to Visit
@@ -76,11 +84,8 @@ const Home = () => {
           ))}
         </div>
       </section>
-
-      <div className="bg-gray-100 min-h-screen py-12">
-        <Itinerary />
-      </div>
       <Footer />
+       
     </div>
   );
 };

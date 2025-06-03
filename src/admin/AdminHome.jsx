@@ -2,7 +2,7 @@ import React from 'react'
 import Footer from './Footer'
 
 import Navbar from './Navbar'
-import AdminUpcomingTrips from './AdminUpcomingTrips'
+import UpcomingTrips from '../pages/UpcomingTrips'
 function AdminHome() {
   return (
     <>
@@ -11,7 +11,7 @@ function AdminHome() {
       </div>
 
       <div>
-        <AdminUpcomingTrips />
+        <UpcomingTrips />
       </div>
       {/* <div className="min-h-screen bg-gray-100">
         <AdminTripForm />

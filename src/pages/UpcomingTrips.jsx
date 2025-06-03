@@ -1,7 +1,7 @@
 "use client"
 
 import { Calendar, MapPin, Users, Star, ChevronLeft, ChevronRight } from "lucide-react"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 
 // Mock data
 const trips = [
@@ -92,6 +92,8 @@ const getBadgeStyle = (badge) => {
 }
 
 const UpcomingTrips = () => {
+
+  const [adminLogin, setAdminLogin] =  useState(false)
   const scrollContainerRef = useRef(null)
 
   const scrollLeft = () => {
@@ -113,7 +115,7 @@ const UpcomingTrips = () => {
   }
 
   return (
-    <div className="py-16 px-4 bg-gradient-to-r from-[#0891b2] via-[#2dd4bf] via-[#5eead4] to-[#f5d0a9] min-h-screen flex items-center">
+    <div className="py-24 px-4 bg-gradient-to-r from-[#0891b2] via-[#2dd4bf] via-[#5eead4] to-[#f5d0a9] min-h-screen flex items-center">
       <div className="max-w-6xl mx-auto w-full">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-blue-700 mb-4">Upcoming Group Adventures</h2>
@@ -256,10 +258,10 @@ const UpcomingTrips = () => {
                   {/* Action Buttons */}
                   <div className="flex gap-3 mt-4">
                     <button className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg py-2.5 px-4 font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-                      Join Adventure
+                      {adminLogin?"Edit Trip":"Join Adventure"}
                     </button>
-                    <button className="px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 font-medium">
-                      Details
+                    <button className={`px-4 py-2.5 border ${adminLogin?"bg-red-500 border-red-300 text-white hover:text-gray-700 rounded-lg hover:bg-red-50 hover:border-red-300":"border-gray-300 text-gray-700 rounded-lg hover:bg-blue-50 hover:border-blue-300"} transition-all duration-300 font-medium`}>
+                      {adminLogin?"Delete":"Details"}
                     </button>
                   </div>
                 </div>

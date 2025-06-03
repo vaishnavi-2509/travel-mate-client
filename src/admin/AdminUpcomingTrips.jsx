@@ -260,16 +260,17 @@ const AdminUpcomingTrips = () => {
                     <button className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg py-2.5 px-4 font-medium shadow-lg hover:shadow-xl transition-all duration-300">
                       Join Adventure
                     </button>
-                    <button
-                      className="px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 font-medium"
-                      onClick={() => setShowForm(true)}
-                    >
-                      Create Trip
+                     <button className="px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 font-medium">
+                      Details
                     </button>
                   </div>
+                  
                 </div>
+                
               </div>
+              
             ))}
+            
           </div>
 
           <div className="flex justify-center mt-8 gap-2">
@@ -281,6 +282,12 @@ const AdminUpcomingTrips = () => {
             ))}
           </div>
         </div>
+        <button
+         className="px-4 py-4 text-white rounded-lg bg-blue-600 hover:bg-blue-800 hover:border-blue-500 transition-all duration-300 font-medium mx-130 my-4"
+         onClick={() => setShowForm(true)}
+         >
+          Create Trip
+        </button>
       </div>
 
       {/* Trip Form Modal */}

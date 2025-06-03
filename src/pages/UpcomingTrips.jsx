@@ -1,7 +1,8 @@
 "use client"
 
 import { Calendar, MapPin, Users, Star, ChevronLeft, ChevronRight } from "lucide-react"
-import { useRef, useState } from "react"
+import { useRef } from "react"
+import { useAuth } from "../Auth/AuthContext"
 
 // Mock data
 const trips = [
@@ -92,8 +93,7 @@ const getBadgeStyle = (badge) => {
 }
 
 const UpcomingTrips = () => {
-
-  const [adminLogin, setAdminLogin] =  useState(false)
+  const { isAdmin } = useAuth();
   const scrollContainerRef = useRef(null)
 
   const scrollLeft = () => {
@@ -258,10 +258,10 @@ const UpcomingTrips = () => {
                   {/* Action Buttons */}
                   <div className="flex gap-3 mt-4">
                     <button className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg py-2.5 px-4 font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-                      {adminLogin?"Edit Trip":"Join Adventure"}
+                      {isAdmin?"Edit Trip":"Join Adventure"}
                     </button>
-                    <button className={`px-4 py-2.5 border ${adminLogin?"bg-red-500 border-red-300 text-white hover:text-gray-700 rounded-lg hover:bg-red-50 hover:border-red-300":"border-gray-300 text-gray-700 rounded-lg hover:bg-blue-50 hover:border-blue-300"} transition-all duration-300 font-medium`}>
-                      {adminLogin?"Delete":"Details"}
+                    <button className={`px-4 py-2.5 border ${isAdmin?"bg-red-500 border-red-300 text-white hover:text-gray-700 rounded-lg hover:bg-red-50 hover:border-red-300":"border-gray-300 text-gray-700 rounded-lg hover:bg-blue-50 hover:border-blue-300"} transition-all duration-300 font-medium`}>
+                      {isAdmin?"Delete":"Details"}
                     </button>
                   </div>
                 </div>

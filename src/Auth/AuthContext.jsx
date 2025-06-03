@@ -5,6 +5,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(null);
 
   useEffect(() => {
     const checkAuthToken = () => {
@@ -19,6 +20,9 @@ export const AuthProvider = ({ children }) => {
           if (expirationTime > Date.now()) {
             setIsLoggedIn(true);
             setUserName(tokenData.name);
+            if(tokenData.admin){
+              setIsAdmin(true);
+            }
           } else {
             // Token expired
             localStorage.removeItem("token");
@@ -55,7 +59,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, userName, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, userName, isAdmin, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

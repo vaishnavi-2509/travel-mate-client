@@ -3,20 +3,41 @@ import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 import Home from "./pages/Home";
 import AdminHome from "./admin/AdminHome";
+import { useAuth } from "./Auth/AuthContext";
+import { Navigate } from "react-router-dom";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 const App = () => {
+  const { isAdmin } = useAuth();
+  console.log("isAdmin", isAdmin);
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600"><SignupPage /></div>} />
+        <Route
+          path="/signup"
+          element={
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600">
+              <SignupPage />
+            </div>
+          }
+        />
         <Route path="/login" element={<LoginPage />} />
         {/* //add admin here */}
-        <Route path="/admin" element={<AdminHome />} />
+        <Route
+          path="/admin"
+          element={
+            isAdmin === null ? (
+              <LoadingSpinner />
+            ) : isAdmin ? (
+              <AdminHome />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
       </Routes>
-      
     </Router>
-
   );
 };
 

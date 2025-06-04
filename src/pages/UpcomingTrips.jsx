@@ -1,11 +1,11 @@
 "use client"
 
 import { Calendar, MapPin, Users, Star, ChevronLeft, ChevronRight } from "lucide-react"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { useAuth } from "../Auth/AuthContext"
+import AdminTripForm from "../admin/AdminTripForm"
 
-// Mock data
-const trips = [
+const allTripsFromAPI = [
   {
     id: 1,
     name: "Bali Adventure Week",
@@ -72,7 +72,6 @@ const trips = [
   },
 ]
 
-// Helper function to get badge styles
 const getBadgeStyle = (badge) => {
   switch (badge.toLowerCase()) {
     case "filling fast":
@@ -92,30 +91,43 @@ const getBadgeStyle = (badge) => {
   }
 }
 
+const convertToINR = (usdPrice) => {
+  const number = parseFloat(usdPrice.replace(/[^0-9.]/g, ''));
+  const inrRate = 83.5;
+  const inrPrice = Math.round(number * inrRate);
+  return `₹${inrPrice.toLocaleString('en-IN')}`;
+};
+
 const UpcomingTrips = () => {
   const { isAdmin } = useAuth();
-  const scrollContainerRef = useRef(null)
+  const scrollContainerRef = useRef(null);
+
+  const [trips, setTrips] = useState(allTripsFromAPI);
+  const [showForm, setShowForm] = useState(false);
+  const [editingTrip, setEditingTrip] = useState(null);
 
   const scrollLeft = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({
-        left: -400,
-        behavior: "smooth",
-      })
-    }
+    scrollContainerRef.current?.scrollBy({ left: -400, behavior: "smooth" })
   }
 
   const scrollRight = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({
-        left: 400,
-        behavior: "smooth",
-      })
-    }
+    scrollContainerRef.current?.scrollBy({ left: 400, behavior: "smooth" })
+  }
+
+  const handleEditTrip = (trip) => {
+    setEditingTrip(trip);
+    setShowForm(true);
+  }
+
+  const handleSaveTrip = (updatedTrip) => {
+    const updatedList = trips.map(t => t.id === updatedTrip.id ? updatedTrip : t);
+    setTrips(updatedList);
+    setShowForm(false);
+    setEditingTrip(null);
   }
 
   return (
-    <div className="py-16 px-4 bg-gradient-to-r from-[#0891b2] via-[#2dd4bf] via-[#5eead4] to-[#f5d0a9] min-h-screen flex items-center">
+    <div className="py-20 px-4 bg-gradient-to-r from-[#0891b2] via-[#2dd4bf] via-[#5eead4] to-[#f5d0a9] min-h-screen flex flex-col items-center">
       <div className="max-w-6xl mx-auto w-full">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-blue-700 mb-4">Upcoming Group Adventures</h2>
@@ -125,160 +137,119 @@ const UpcomingTrips = () => {
         </div>
 
         <div className="relative">
-          {/* Left Arrow */}
-          <button
-            onClick={scrollLeft}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg hover:shadow-xl rounded-full p-3 transition-all duration-300 group"
-          >
+          <button onClick={scrollLeft} className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg hover:shadow-xl rounded-full p-3 transition-all duration-300 group">
             <ChevronLeft className="w-6 h-6 text-gray-700 group-hover:text-blue-600" />
           </button>
 
-          {/* Right Arrow */}
-          <button
-            onClick={scrollRight}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg hover:shadow-xl rounded-full p-3 transition-all duration-300 group"
-          >
+          <button onClick={scrollRight} className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg hover:shadow-xl rounded-full p-3 transition-all duration-300 group">
             <ChevronRight className="w-6 h-6 text-gray-700 group-hover:text-blue-600" />
           </button>
 
-          {/* Cards Container */}
-          <div
-            ref={scrollContainerRef}
-            className="flex gap-6 overflow-x-auto pb-6 scroll-smooth snap-x snap-mandatory px-12"
-            style={{
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
-            }}
-          >
-            <style
-              dangerouslySetInnerHTML={{
-                __html: `
-              div::-webkit-scrollbar {
-                display: none;
-              }
-            `,
-              }}
-            />
+          <div ref={scrollContainerRef} className="flex gap-6 overflow-x-auto pb-6 scroll-smooth snap-x snap-mandatory px-12" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+            <style dangerouslySetInnerHTML={{ __html: `div::-webkit-scrollbar { display: none; }` }} />
 
             {trips.map((trip) => (
-              <div
-                key={trip.id}
-                className="min-w-[700px] snap-center group hover:shadow-2xl transition-all duration-500 bg-white rounded-2xl hover:scale-[1.02] flex overflow-hidden"
-              >
-                {/* Image Section - Left Side */}
+              <div key={trip.id} className="min-w-[700px] snap-center group hover:shadow-2xl transition-all duration-500 bg-white rounded-2xl hover:scale-[1.02] flex overflow-hidden">
                 <div className="relative w-2/5 overflow-hidden">
-                  <img
-                    src={trip.image || "/placeholder.svg"}
-                    alt={trip.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
+                  <img src={trip.image || "/placeholder.svg"} alt={trip.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20" />
-
-                  {/* Badges */}
                   <div className="absolute top-4 left-4 flex flex-col gap-2">
                     {trip.badges.map((badge, idx) => (
-                      <span
-                        key={idx}
-                        className={`${getBadgeStyle(badge)} px-2 py-1 rounded-full text-xs font-medium shadow-lg backdrop-blur-sm`}
-                      >
+                      <span key={idx} className={`${getBadgeStyle(badge)} px-2 py-1 rounded-full text-xs font-medium shadow-lg backdrop-blur-sm`}>
                         {badge}
                       </span>
                     ))}
                   </div>
-
-                  {/* Rating */}
                   <div className="absolute bottom-4 left-4 flex items-center gap-1 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full shadow-lg">
                     <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
                     <span className="text-xs font-medium text-gray-900">{trip.rating}</span>
                   </div>
                 </div>
 
-                {/* Content Section - Right Side */}
                 <div className="w-3/5 p-6 flex flex-col justify-between">
                   <div className="space-y-4">
-                    <div className="flex justify-between items-start">
-                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
-                        {trip.name}
-                      </h3>
-                      <div className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold">
-                        {trip.price}
-                      </div>
-                    </div>
-
+                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{trip.name}</h3>
                     <div className="space-y-2 text-sm text-gray-600">
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-blue-500" />
-                        <span>
-                          {trip.startDate} – {trip.endDate}
-                        </span>
+                        <span>{trip.startDate} – {trip.endDate}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <MapPin className="w-4 h-4 text-red-500" />
                         <span>{trip.location}</span>
                       </div>
                     </div>
-
                     <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">{trip.description}</p>
-
-                    {/* Progress Bar */}
                     <div className="space-y-2">
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-2 text-gray-700">
                           <Users className="w-4 h-4 text-green-500" />
-                          <span className="font-medium">
-                            {trip.joined}/{trip.total} Travelers
-                          </span>
+                          <span className="font-medium">{trip.joined}/{trip.total} Travelers</span>
                         </div>
-                        <span className="text-xs text-gray-500">
-                          {Math.round((trip.joined / trip.total) * 100)}% full
-                        </span>
+                        <span className="text-xs text-gray-500">{Math.round((trip.joined / trip.total) * 100)}% full</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                        <div
-                          className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-500"
-                          style={{ width: `${(trip.joined / trip.total) * 100}%` }}
-                        ></div>
+                        <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-500" style={{ width: `${(trip.joined / trip.total) * 100}%` }}></div>
                       </div>
                     </div>
-
-                    {/* Creator */}
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={trip.creatorImg || "/placeholder.svg"}
-                        alt={trip.createdBy}
-                        className="w-8 h-8 rounded-full border-2 border-white shadow-sm"
-                      />
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">Created by {trip.createdBy}</p>
-                        <p className="text-xs text-gray-500">Trip Organizer</p>
-                      </div>
+                    <div className="text-left mt-4">
+                      <div className="inline-block bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold">{convertToINR(trip.price)}</div>
                     </div>
                   </div>
 
-                  {/* Action Buttons */}
                   <div className="flex gap-3 mt-4">
-                    <button className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg py-2.5 px-4 font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-                      {isAdmin?"Edit Trip":"Join Adventure"}
-                    </button>
-                    <button className={`px-4 py-2.5 border ${isAdmin?"bg-red-500 border-red-300 text-white hover:text-gray-700 rounded-lg hover:bg-red-50 hover:border-red-300":"border-gray-300 text-gray-700 rounded-lg hover:bg-blue-50 hover:border-blue-300"} transition-all duration-300 font-medium`}>
-                      {isAdmin?"Delete":"Details"}
-                    </button>
+                    {isAdmin ? (
+                      <>
+                        <button onClick={() => handleEditTrip(trip)} className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg py-2.5 px-4 font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+                          Edit Trip
+                        </button>
+                        <button className="px-4 py-2.5 border border-red-300 bg-red-500 text-white rounded-lg transition-all duration-300 font-medium hover:bg-red-600">
+                          Delete
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg py-2.5 px-4 font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+                          Join Adventure
+                        </button>
+                        <button className="px-4 py-2.5 border border-gray-300 text-gray-700 hover:bg-blue-50 hover:border-blue-300 rounded-lg transition-all duration-300 font-medium">
+                          Details
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
             ))}
           </div>
-
-          {/* Scroll Indicators */}
-          {/* <div className="flex justify-center mt-8 gap-2">
-            {trips.map((_, idx) => (
-              <div
-                key={idx}
-                className="w-2 h-2 rounded-full bg-gray-300 hover:bg-blue-500 transition-colors cursor-pointer"
-              />
-            ))}
-          </div> */}
         </div>
+
+        {/* Create Trip Button */}
+        {isAdmin && (
+          <div className="flex justify-center mt-12">
+            <button
+              onClick={() => {
+                setEditingTrip(null);
+                setShowForm(true);
+              }}
+              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              Create Trip
+            </button>
+          </div>
+        )}
+
+        {/* Modal for AdminTripForm */}
+        {isAdmin && showForm && (
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative p-6">
+              <button onClick={() => setShowForm(false)} className="absolute top-3 right-4 text-gray-500 hover:text-red-500 text-2xl font-bold z-10">×</button>
+              <div className="pt-8">
+                <AdminTripForm trip={editingTrip} onSave={handleSaveTrip} />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

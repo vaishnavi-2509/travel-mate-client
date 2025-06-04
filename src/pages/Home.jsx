@@ -43,14 +43,7 @@ const Home = () => {
       <div className="pt-16 px-4">
         <SearchForm />
       </div>
-      <div>
-      <UpcomingTrips />
-    </div>
-      
 
-      <div>
-        <Itinerary />
-      </div>
       <section id="places" className="bg-white py-6 px-4 relative overflow-hidden">
         <h2 className="text-4xl font-extrabold text-center text-blue-700 mb-12 tracking-tight">
           Top Places to Visit
@@ -84,7 +77,15 @@ const Home = () => {
           ))}
         </div>
       </section>
-      <Footer />
+
+      <div>
+        <Itinerary />
+      </div>
+      <div>
+        <UpcomingTrips />
+      </div>
+      
+        <Footer />
        
     </div>
   );

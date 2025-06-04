@@ -115,7 +115,7 @@ const UpcomingTrips = () => {
   }
 
   return (
-    <div className="py-24 px-4 bg-gradient-to-r from-[#0891b2] via-[#2dd4bf] via-[#5eead4] to-[#f5d0a9] min-h-screen flex items-center">
+    <div className="py-16 px-4 bg-gradient-to-r from-[#0891b2] via-[#2dd4bf] via-[#5eead4] to-[#f5d0a9] min-h-screen flex items-center">
       <div className="max-w-6xl mx-auto w-full">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-blue-700 mb-4">Upcoming Group Adventures</h2>
@@ -270,14 +270,14 @@ const UpcomingTrips = () => {
           </div>
 
           {/* Scroll Indicators */}
-          <div className="flex justify-center mt-8 gap-2">
+          {/* <div className="flex justify-center mt-8 gap-2">
             {trips.map((_, idx) => (
               <div
                 key={idx}
                 className="w-2 h-2 rounded-full bg-gray-300 hover:bg-blue-500 transition-colors cursor-pointer"
               />
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

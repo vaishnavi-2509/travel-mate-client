@@ -1,76 +1,83 @@
 "use client"
 
 import { Calendar, MapPin, Users, Star, ChevronLeft, ChevronRight } from "lucide-react"
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import { useAuth } from "../Auth/AuthContext"
 import AdminTripForm from "../admin/AdminTripForm"
+import axios from "axios"
 
-const allTripsFromAPI = [
-  {
-    id: 1,
-    name: "Bali Adventure Week",
-    startDate: "June 18",
-    endDate: "June 25, 2025",
-    location: "Bali, Indonesia",
-    joined: 7,
-    total: 10,
-    createdBy: "Maria",
-    creatorImg: "https://randomuser.me/api/portraits/women/68.jpg",
-    description: "Explore ancient rice terraces, pristine beaches, and immerse yourself in rich cultural experiences.",
-    image: "../upcoming_trip_photos/bali.jpg",
-    badges: ["Filling Fast", "Adventure"],
-    rating: 4.8,
-    price: "$1,299",
-  },
-  {
-    id: 2,
-    name: "Alps Hiking Tour",
-    startDate: "July 10",
-    endDate: "July 18, 2025",
-    location: "Swiss Alps",
-    joined: 3,
-    total: 8,
-    createdBy: "Liam",
-    creatorImg: "https://randomuser.me/api/portraits/men/44.jpg",
-    description: "A breathtaking scenic hiking adventure through the majestic Swiss Alps with experienced guides.",
-    image: "../upcoming_trip_photos/bali.jpg",
-    badges: ["New"],
-    rating: 4.9,
-    price: "$1,899",
-  },
-  {
-    id: 3,
-    name: "Tokyo Culture Deep Dive",
-    startDate: "August 5",
-    endDate: "August 12, 2025",
-    location: "Tokyo, Japan",
-    joined: 6,
-    total: 12,
-    createdBy: "Yuki",
-    creatorImg: "https://randomuser.me/api/portraits/women/58.jpg",
-    description: "Discover hidden gems, traditional temples, and modern marvels in Japan's vibrant capital.",
-    image: "../upcoming_trip_photos/bali.jpg",
-    badges: ["Cultural", "Popular"],
-    rating: 4.7,
-    price: "$2,199",
-  },
-  {
-    id: 4,
-    name: "Safari Adventure Kenya",
-    startDate: "September 15",
-    endDate: "September 22, 2025",
-    location: "Masai Mara, Kenya",
-    joined: 4,
-    total: 8,
-    createdBy: "James",
-    creatorImg: "https://randomuser.me/api/portraits/men/32.jpg",
-    description: "Experience the great migration and witness Africa's incredible wildlife in their natural habitat.",
-    image: "../upcoming_trip_photos/bali.jpg",
-    badges: ["Wildlife", "Adventure"],
-    rating: 4.9,
-    price: "$2,899",
-  },
-]
+// const allTripsFromAPI = [
+//   {
+//     id: 1,
+//     name: "Bali Adventure Week",
+//     startDate: "June 18",
+//     endDate: "June 25, 2025",
+//     location: "Bali, Indonesia",
+//     joined: 7,
+//     total: 10,
+//     createdBy: "Maria",
+//     creatorImg: "https://randomuser.me/api/portraits/women/68.jpg",
+//     description: "Explore ancient rice terraces, pristine beaches, and immerse yourself in rich cultural experiences.",
+//     image: "../upcoming_trip_photos/bali.jpg",
+//     badges: ["Filling Fast", "Adventure"],
+//     rating: 4.8,
+//     price: "$1,299",
+//   },
+//   {
+//     id: 2,
+//     name: "Alps Hiking Tour",
+//     startDate: "July 10",
+//     endDate: "July 18, 2025",
+//     location: "Swiss Alps",
+//     joined: 3,
+//     total: 8,
+//     createdBy: "Liam",
+//     creatorImg: "https://randomuser.me/api/portraits/men/44.jpg",
+//     description: "A breathtaking scenic hiking adventure through the majestic Swiss Alps with experienced guides.",
+//     image: "../upcoming_trip_photos/bali.jpg",
+//     badges: ["New"],
+//     rating: 4.9,
+//     price: "$1,899",
+//   },
+//   {
+//     id: 3,
+//     name: "Tokyo Culture Deep Dive",
+//     startDate: "August 5",
+//     endDate: "August 12, 2025",
+//     location: "Tokyo, Japan",
+//     joined: 6,
+//     total: 12,
+//     createdBy: "Yuki",
+//     creatorImg: "https://randomuser.me/api/portraits/women/58.jpg",
+//     description: "Discover hidden gems, traditional temples, and modern marvels in Japan's vibrant capital.",
+//     image: "../upcoming_trip_photos/bali.jpg",
+//     badges: ["Cultural", "Popular"],
+//     rating: 4.7,
+//     price: "$2,199",
+//   },
+//   {
+//     id: 4,
+//     name: "Safari Adventure Kenya",
+//     startDate: "September 15",
+//     endDate: "September 22, 2025",
+//     location: "Masai Mara, Kenya",
+//     joined: 4,
+//     total: 8,
+//     createdBy: "James",
+//     creatorImg: "https://randomuser.me/api/portraits/men/32.jpg",
+//     description: "Experience the great migration and witness Africa's incredible wildlife in their natural habitat.",
+//     image: "../upcoming_trip_photos/bali.jpg",
+//     badges: ["Wildlife", "Adventure"],
+//     rating: 4.9,
+//     price: "$2,899",
+//   },
+// ]
+
+const getTrips = async () => {
+  const response = await axios.get("http://localhost:5500/api/trips");
+  console.log(response.data);
+  return response.data;
+}
 
 const getBadgeStyle = (badge) => {
   switch (badge.toLowerCase()) {
@@ -91,18 +98,20 @@ const getBadgeStyle = (badge) => {
   }
 }
 
-const convertToINR = (usdPrice) => {
-  const number = parseFloat(usdPrice.replace(/[^0-9.]/g, ''));
-  const inrRate = 83.5;
-  const inrPrice = Math.round(number * inrRate);
-  return `₹${inrPrice.toLocaleString('en-IN')}`;
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+};
+
+const formatPrice = (price) => {
+  return `₹${price.toLocaleString('en-IN')}`;
 };
 
 const UpcomingTrips = () => {
   const { isAdmin } = useAuth();
   const scrollContainerRef = useRef(null);
 
-  const [trips, setTrips] = useState(allTripsFromAPI);
+  const [trips, setTrips] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editingTrip, setEditingTrip] = useState(null);
 
@@ -120,11 +129,15 @@ const UpcomingTrips = () => {
   }
 
   const handleSaveTrip = (updatedTrip) => {
-    const updatedList = trips.map(t => t.id === updatedTrip.id ? updatedTrip : t);
+    const updatedList = trips.map(t => t._id === updatedTrip._id ? updatedTrip : t);
     setTrips(updatedList);
     setShowForm(false);
     setEditingTrip(null);
   }
+
+  useEffect(() => {
+    getTrips().then(setTrips);
+  }, []);
 
   return (
     <div className="py-24 px-4 bg-gradient-to-r from-[#0891b2] via-[#2dd4bf] via-[#5eead4] to-[#f5d0a9] min-h-screen flex flex-col items-center">
@@ -149,14 +162,14 @@ const UpcomingTrips = () => {
             <style dangerouslySetInnerHTML={{ __html: `div::-webkit-scrollbar { display: none; }` }} />
 
             {trips.map((trip) => (
-              <div key={trip.id} className="min-w-[700px] snap-center group hover:shadow-2xl transition-all duration-500 bg-white rounded-2xl hover:scale-[1.02] flex overflow-hidden">
+              <div key={trip._id} className="min-w-[700px] snap-center group hover:shadow-2xl transition-all duration-500 bg-white rounded-2xl hover:scale-[1.02] flex overflow-hidden">
                 <div className="relative w-2/5 overflow-hidden">
-                  <img src={trip.image || "/placeholder.svg"} alt={trip.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <img src={trip.imageUrl || "/placeholder.svg"} alt={trip.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20" />
                   <div className="absolute top-4 left-4 flex flex-col gap-2">
-                    {trip.badges.map((badge, idx) => (
-                      <span key={idx} className={`${getBadgeStyle(badge)} px-2 py-1 rounded-full text-xs font-medium shadow-lg backdrop-blur-sm`}>
-                        {badge}
+                    {trip.tags.map((tag, idx) => (
+                      <span key={idx} className={`${getBadgeStyle(tag)} px-2 py-1 rounded-full text-xs font-medium shadow-lg backdrop-blur-sm`}>
+                        {tag}
                       </span>
                     ))}
                   </div>
@@ -168,11 +181,11 @@ const UpcomingTrips = () => {
 
                 <div className="w-3/5 p-6 flex flex-col justify-between">
                   <div className="space-y-4">
-                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{trip.name}</h3>
+                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{trip.title}</h3>
                     <div className="space-y-2 text-sm text-gray-600">
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-blue-500" />
-                        <span>{trip.startDate} – {trip.endDate}</span>
+                        <span>{formatDate(trip.startDate)} – {formatDate(trip.endDate)}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <MapPin className="w-4 h-4 text-red-500" />
@@ -184,16 +197,16 @@ const UpcomingTrips = () => {
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-2 text-gray-700">
                           <Users className="w-4 h-4 text-green-500" />
-                          <span className="font-medium">{trip.joined}/{trip.total} Travelers</span>
+                          <span className="font-medium">{trip.currentTravelers}/{trip.maxTravelers} Travelers</span>
                         </div>
-                        <span className="text-xs text-gray-500">{Math.round((trip.joined / trip.total) * 100)}% full</span>
+                        <span className="text-xs text-gray-500">{Math.round((trip.currentTravelers / trip.maxTravelers) * 100)}% full</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                        <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-500" style={{ width: `${(trip.joined / trip.total) * 100}%` }}></div>
+                        <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-500" style={{ width: `${(trip.currentTravelers / trip.maxTravelers) * 100}%` }}></div>
                       </div>
                     </div>
                     <div className="text-left mt-4">
-                      <div className="inline-block bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold">{convertToINR(trip.price)}</div>
+                      <div className="inline-block bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold">{formatPrice(trip.price)}</div>
                     </div>
                   </div>
 

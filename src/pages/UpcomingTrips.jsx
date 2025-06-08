@@ -216,7 +216,30 @@ const UpcomingTrips = () => {
                         <button onClick={() => handleEditTrip(trip)} className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg py-2.5 px-4 font-medium shadow-lg hover:shadow-xl transition-all duration-300">
                           Edit Trip
                         </button>
-                        <button className="px-4 py-2.5 border border-red-300 bg-red-500 text-white rounded-lg transition-all duration-300 font-medium hover:bg-red-600">
+                        <button 
+                          onClick={() => {
+                            if (window.confirm('Are you sure you want to delete this trip?')) {
+                              fetch(`http://localhost:5500/api/trips/${trip._id}`, {
+                                method: 'DELETE',
+                                headers: {
+                                  'Authorization': `Bearer ${localStorage.getItem('token')}`
+                                }
+                              })
+                              .then(response => {
+                                if (response.ok) {
+                                  setTrips(trips.filter(t => t._id !== trip._id));
+                                } else {
+                                  throw new Error('Failed to delete trip');
+                                }
+                              })
+                              .catch(error => {
+                                console.error('Error deleting trip:', error);
+                                alert('Failed to delete trip. Please try again.');
+                              });
+                            }
+                          }}
+                          className="px-4 py-2.5 border border-red-300 bg-red-500 text-white rounded-lg transition-all duration-300 font-medium hover:bg-red-600"
+                        >
                           Delete
                         </button>
                       </>

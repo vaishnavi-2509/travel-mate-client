@@ -24,7 +24,7 @@ const SearchForm = () => {
   const [sourceOptions, setSourceOptions] = useState([]);
   const [destinationOptions, setDestinationOptions] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [showResults, setShowResults] = useState(false); // NEW state
+  const [showResults, setShowResults] = useState(false);
 
   const handleInputChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -63,7 +63,7 @@ const SearchForm = () => {
         date: form.date,
       });
       setFlights(results || []);
-      setShowResults(true); // Show results
+      setShowResults(true);
     } catch (error) {
       console.error('Error fetching flights:', error);
     }
@@ -71,15 +71,15 @@ const SearchForm = () => {
   };
 
   const handleBack = () => {
-    setShowResults(false); // Hide results and go back to form
-    setFlights([]); // Optionally clear flights
+    setShowResults(false);
+    setFlights([]);
   };
 
   return (
-      <div
+    <div
       className="min-h-screen w-full flex flex-col items-center justify-center bg-cover bg-center text-white px-4 py-10 relative"
       style={{ backgroundImage: `url(${backgroundImage})` }}
-      >
+    >
       <div className="max-w-2xl text-center mb-8 animate-fadeIn">
         <h1 className="text-4xl font-bold mb-4">Discover Amazing Flights with Travel Mate</h1>
         <p className="text-lg text-gray-100">Find the best deals and plan your next adventure effortlessly.</p>
@@ -101,7 +101,16 @@ const SearchForm = () => {
               onSubmit={handleSubmit}
               className="bg-white p-8 rounded-3xl shadow-xl space-y-6 text-gray-700"
             >
-              <h2 className="text-2xl font-bold text-center text-blue-700">Search Flights</h2>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-bold text-blue-700">Search Flights</h2>
+                <button
+                  onClick={() => setShowForm(false)}
+                  className="text-blue-400 hover:text-blue-600 text-2px font-bold transition"
+                  title="Close"
+                >
+                  ✖
+                </button>
+              </div>
 
               <div className="relative">
                 <input

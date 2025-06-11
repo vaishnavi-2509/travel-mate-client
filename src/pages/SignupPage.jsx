@@ -60,7 +60,7 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full space-y-6">
         <h2 className="text-3xl font-bold text-center text-blue-700">Create Your Account</h2>
 

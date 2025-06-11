@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { MapPin, Clock, Star, Users, Camera, X } from "lucide-react"
+import { MapPin, Clock, Star, Users, Camera, X, ThumbsUp } from "lucide-react"
 
 const PlaceCard = ({
   image,
@@ -14,15 +14,29 @@ const PlaceCard = ({
   highlights = ["Beautiful scenery", "Rich history", "Great for photos"],
   fullDescription,
   gallery = [],
+  initialVotes = 0,
 }) => {
   const [showModal, setShowModal] = useState(false)
   const [activeImageIndex, setActiveImageIndex] = useState(0)
+  const [upvoted, setUpvoted] = useState(false)
+  const [voteCount, setVoteCount] = useState(initialVotes)
 
   const allImages = [image, ...gallery]
   const expandedDescription =
     fullDescription ||
     description +
       " This destination offers an incredible experience with stunning views, rich cultural heritage, and unforgettable memories. Perfect for travelers seeking adventure and beauty in one place."
+
+  const handleUpvote = (e) => {
+    e.stopPropagation()
+    if (upvoted) {
+      setUpvoted(false)
+      setVoteCount((prev) => prev - 1)
+    } else {
+      setUpvoted(true)
+      setVoteCount((prev) => prev + 1)
+    }
+  }
 
   return (
     <>
@@ -54,8 +68,12 @@ const PlaceCard = ({
         {/* Content Section */}
         <div className="p-6 flex-grow flex flex-col justify-between">
           <div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">{name}</h3>
-            <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed mb-4">{description}</p>
+            <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
+              {name}
+            </h3>
+            <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed mb-4">
+              {description}
+            </p>
 
             {/* Stats */}
             <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
@@ -70,17 +88,30 @@ const PlaceCard = ({
             </div>
           </div>
 
-          <button className="mt-auto bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm font-medium py-2.5 px-4 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
-            Read More
-          </button>
+          {/* Actions */}
+          <div className="flex items-center justify-between mt-4">
+            <button
+              onClick={handleUpvote}
+              className={`flex items-center gap-1 text-sm font-medium px-3 py-1.5 rounded-full transition-all ${
+                upvoted
+                  ? "bg-blue-100 text-blue-700 border border-blue-400"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              <ThumbsUp className={`w-4 h-4 ${upvoted ? "fill-blue-500" : "fill-gray-400"}`} />
+              {voteCount}
+            </button>
+            <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm font-medium py-2.5 px-4 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+              Read More
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Enhanced Modal */}
+      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
           <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative animate-in fade-in zoom-in duration-300">
-            {/* Close Button */}
             <button
               onClick={() => setShowModal(false)}
               className="absolute top-4 right-4 z-10 bg-white/90 backdrop-blur-sm text-gray-600 hover:text-red-500 p-2 rounded-full shadow-lg transition-colors"
@@ -98,7 +129,6 @@ const PlaceCard = ({
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
 
-              {/* Image Navigation */}
               {allImages.length > 1 && (
                 <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
                   {allImages.map((_, index) => (
@@ -116,7 +146,6 @@ const PlaceCard = ({
                 </div>
               )}
 
-              {/* Overlay Info */}
               <div className="absolute bottom-6 left-6 text-white">
                 <h2 className="text-3xl font-bold mb-2">{name}</h2>
                 <div className="flex items-center gap-4 text-sm">
@@ -132,9 +161,8 @@ const PlaceCard = ({
               </div>
             </div>
 
-            {/* Content */}
+            {/* Modal Content */}
             <div className="p-8">
-              {/* Stats Row */}
               <div className="grid grid-cols-3 gap-6 mb-8">
                 <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl">
                   <Clock className="w-6 h-6 text-blue-600 mx-auto mb-2" />
@@ -153,31 +181,31 @@ const PlaceCard = ({
                 </div>
               </div>
 
-              {/* Description */}
               <div className="mb-8">
                 <h3 className="text-xl font-bold text-gray-800 mb-4">About This Place</h3>
                 <p className="text-gray-700 leading-relaxed text-base">{expandedDescription}</p>
               </div>
 
-              {/* Highlights */}
               <div className="mb-8">
                 <h3 className="text-xl font-bold text-gray-800 mb-4">Highlights</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {highlights.map((highlight, index) => (
-                    <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                      <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"></div>
+                    <div
+                      key={index}
+                      className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl"
+                    >
+                      <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" />
                       <span className="text-gray-700">{highlight}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex gap-4">
-                <button className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium py-3 px-6 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <button className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium py-3 px-6 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
                   Plan Your Visit
                 </button>
-                <button className="flex-1 border-2 border-gray-200 text-gray-700 font-medium py-3 px-6 rounded-xl hover:border-gray-300 hover:bg-gray-50 transition-all duration-300">
+                <button className="flex-1 border-2 border-gray-200 text-gray-500 font-medium py-3 px-6 rounded-xl hover:border-gray-300 hover:bg-gray-50 transition-all duration-300">
                   Save for Later
                 </button>
               </div>

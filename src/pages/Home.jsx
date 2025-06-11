@@ -5,6 +5,7 @@ import PlaceCard from "../components/PlaceCard";
 import Itinerary from "../components/Itinerary";
 import Footer from "../components/Footer";
 import UpcomingTrips from "./UpcomingTrips";
+import JoinAdventureForm from "./JoinAdventureForm";
 
 const places = [
   { name: "Paris", image: "./images/paris.jpg", description: "The city of lights and love with iconic landmarks like the Eiffel Tower, cafes, and charming streets.", location: "Paris, France" },
@@ -85,6 +86,9 @@ const Home = () => {
         <UpcomingTrips />
       </div>
       
+      <div>
+        <JoinAdventureForm />
+      </div>
         <Footer />
        
     </div>

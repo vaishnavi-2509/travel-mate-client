@@ -45,7 +45,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-3 md:py-4">
         {/* Logo */}
         <div className="text-3xl font-extrabold text-blue-700 tracking-wide hover:scale-105 transition-transform">
-          <Link to="/">Travel Mate</Link>
+          <Link to="/"><img className="max-w-[120px]" src="../images/logo.png"></img></Link>
         </div>
 
         {/* Desktop Menu */}

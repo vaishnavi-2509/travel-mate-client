@@ -110,12 +110,12 @@ const LoginPage = () => {
           </button>
         </form>
 
-        <div className="flex items-center justify-center space-x-2">
+        {/* <div className="flex items-center justify-center space-x-2">
           <div className="h-px w-full bg-gray-300"></div>
           <span className="text-sm text-gray-400">OR</span>
           <div className="h-px w-full bg-gray-300"></div>
-        </div>
-
+        </div> */}
+{/* 
         <div className="space-y-2">
           <button className="w-full flex items-center justify-center gap-2 bg-red-500 text-white py-2 rounded-md hover:bg-red-600 transition-colors">
             <i className="fab fa-google"></i> Continue with Google
@@ -123,7 +123,7 @@ const LoginPage = () => {
           <button className="w-full flex items-center justify-center gap-2 bg-blue-800 text-white py-2 rounded-md hover:bg-blue-900 transition-colors">
             <i className="fab fa-facebook-f"></i> Continue with Facebook
           </button>
-        </div>
+        </div> */}
 
         <div className="text-center text-sm text-gray-600">
           Don’t have an account?{" "}

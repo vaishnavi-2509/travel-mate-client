@@ -48,7 +48,7 @@ const SignupPage = () => {
     }
 
     try {
-      const { confirmPassword, ...userData } = formData; // exclude confirmPassword from API
+      const { confirmPassword, ...userData } = formData; 
       const response = await axios.post("http://localhost:5500/api/users/signup", userData);
       console.log("Success:", response.data);
       navigate("/login");

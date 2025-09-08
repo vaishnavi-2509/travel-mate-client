@@ -6,6 +6,7 @@ import Itinerary from "../components/Itinerary";
 import Footer from "../components/Footer";
 import UpcomingTrips from "./UpcomingTrips";
 import JoinAdventureForm from "./JoinAdventureForm";
+import Contact from "./Contact";
 
 const places = [
   { name: "Paris", image: "./images/paris.jpg", description: "The city of lights and love with iconic landmarks like the Eiffel Tower, cafes, and charming streets.", location: "Paris, France" },
@@ -41,7 +42,7 @@ const Home = () => {
   return (
     <div className="bg-cover bg-center min-h-screen">
       <Navbar />
-      <div className="pt-16 px-4">
+      <div className="pt-16 px-4" id="home">
         <SearchForm />
       </div>
 
@@ -79,15 +80,15 @@ const Home = () => {
         </div>
       </section>
 
-      <div>
+      <div id="itinerary">
         <Itinerary />
       </div>
-      <div>
+      <div id="trips">
         <UpcomingTrips />
       </div>
       
-      <div>
-        <JoinAdventureForm />
+      <div id="contact">
+        <Contact />
       </div>
         <Footer />
        

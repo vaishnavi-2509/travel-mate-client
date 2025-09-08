@@ -57,17 +57,17 @@ const Navbar = () => {
           </li>
           <li>
             <a href="#places" className="hover:text-blue-600">
-              Places
+              Destination
             </a>
           </li>
           <li>
-            <a href="#popular" className="hover:text-blue-600">
-              Popular
+            <a href="#itinerary" className="hover:text-blue-600">
+              Itineraries
             </a>
           </li>
           <li>
-            <a href="#reviews" className="hover:text-blue-600">
-              Reviews
+            <a href="#trips" className="hover:text-blue-600">
+              Trips
             </a>
           </li>
           <li>
@@ -130,19 +130,19 @@ const Navbar = () => {
             href="#places"
             className="block text-gray-700 font-semibold hover:text-blue-600"
           >
-            Places
+            Destination
           </a>
           <a
-            href="#popular"
+            href="#itinerary"
             className="block text-gray-700 font-semibold hover:text-blue-600"
           >
-            Popular
+            Itineraries
           </a>
           <a
-            href="#reviews"
+            href="#trips"
             className="block text-gray-700 font-semibold hover:text-blue-600"
           >
-            Reviews
+            Trips
           </a>
           <a
             href="#contact"

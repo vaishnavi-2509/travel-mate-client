@@ -32,6 +32,97 @@ const SearchForm = () => {
     else if (e.target.name === 'destination') fetchAirports(e.target.value, 'destination');
   };
 
+const [showTravelerForm, setShowTravelerForm] = useState(false);
+const [selectedFlight, setSelectedFlight] = useState(null);
+const [traveler, setTraveler] = useState({
+  firstName: "",
+  lastName: "",
+  gender: "MALE",
+  dateOfBirth: "",
+  email: "",
+  phone: "",
+  passportNumber: "",
+  nationality: "IN",
+});
+
+const handleBookClick = (flight) => {
+  setSelectedFlight(flight);
+  setShowTravelerForm(true);
+};
+
+const handleBookFlight = async (flight, traveler) => {
+  const payload = {
+    data: {
+      type: "flight-order",
+      flightOffers: [flight],
+      travelers: [
+        {
+          id: "1",
+          dateOfBirth: traveler.dateOfBirth,
+          name: {
+            firstName: traveler.firstName,
+            lastName: traveler.lastName,
+          },
+          gender: traveler.gender,
+          contact: {
+            emailAddress: traveler.email,
+            phones: [
+              {
+                deviceType: "MOBILE",
+                countryCallingCode: "91",
+                number: traveler.phone,
+              },
+            ],
+          },
+          documents: [
+            {
+              documentType: "PASSPORT",
+              number: traveler.passportNumber,
+              expiryDate: "2030-12-31",
+              issuanceCountry: traveler.nationality,
+              nationality: traveler.nationality,
+              holder: true,
+            },
+          ],
+        },
+      ],
+      payments: [
+        {
+          method: "CARD",
+          card: {
+            vendorCode: "VI",
+            cardNumber: "4111111111111111",
+            expiryDate: "2026-11",
+          },
+        },
+      ],
+    },
+  };
+
+  try {
+    const res = await fetch("https://test.api.amadeus.com/v1/booking/flight-orders", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_AMADEUS_ACCESS_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await res.json();
+    console.log("Booking response:", result);
+    setShowTravelerForm(false);
+    setSelectedFlight(null);
+    alert("Booking successful! Confirmation sent.");
+    // Optional: navigate to confirmation page
+    // navigate(`/confirmation?bookingId=${result?.data?.id}`);
+  } catch (error) {
+    console.error("Booking failed:", error);
+    alert("Booking failed. Check console for details.");
+  }
+};
+
+
   const fetchAirports = async (keyword, field) => {
     if (keyword.length < 2) return;
     try {
@@ -228,6 +319,12 @@ const SearchForm = () => {
                       <div className="mt-2 text-sm text-gray-500">
                         Airline: {airlineNames[firstSegment.carrierCode] || firstSegment.carrierCode} | Flight #: {firstSegment.number}
                       </div>
+                     <button
+                        onClick={() => handleBookClick(flight)}
+                        className="mt-4 bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition text-sm font-semibold">
+                        Book Now
+                      </button>
+
                     </div>
                   );
                 })}
@@ -236,6 +333,83 @@ const SearchForm = () => {
           )}
         </div>
       )}
+      {showTravelerForm && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="bg-white rounded-2xl p-8 w-full max-w-xl text-gray-800 relative">
+      <h2 className="text-xl font-bold mb-4">Enter Traveler Information</h2>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleBookFlight(selectedFlight, traveler);
+        }}
+        className="space-y-4"
+      >
+        <div className="flex gap-4">
+          <input
+            type="text"
+            placeholder="First Name"
+            required
+            className="w-full p-2 border rounded"
+            value={traveler.firstName}
+            onChange={(e) => setTraveler({ ...traveler, firstName: e.target.value })}
+          />
+          <input
+            type="text"
+            placeholder="Last Name"
+            required
+            className="w-full p-2 border rounded"
+            value={traveler.lastName}
+            onChange={(e) => setTraveler({ ...traveler, lastName: e.target.value })}
+          />
+        </div>
+        <input
+          type="date"
+          required
+          className="w-full p-2 border rounded"
+          value={traveler.dateOfBirth}
+          onChange={(e) => setTraveler({ ...traveler, dateOfBirth: e.target.value })}
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          required
+          className="w-full p-2 border rounded"
+          value={traveler.email}
+          onChange={(e) => setTraveler({ ...traveler, email: e.target.value })}
+        />
+        <input
+          type="tel"
+          placeholder="Phone Number"
+          required
+          className="w-full p-2 border rounded"
+          value={traveler.phone}
+          onChange={(e) => setTraveler({ ...traveler, phone: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="Passport Number"
+          required
+          className="w-full p-2 border rounded"
+          value={traveler.passportNumber}
+          onChange={(e) => setTraveler({ ...traveler, passportNumber: e.target.value })}
+        />
+        <div className="flex justify-between mt-4">
+          <button
+            type="button"
+            onClick={() => setShowTravelerForm(false)}
+            className="px-4 py-2 bg-gray-300 rounded"
+          >
+            Cancel
+          </button>
+            <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded">
+            Confirm Booking
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

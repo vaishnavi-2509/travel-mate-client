@@ -1,24 +1,59 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
+import { useAuth } from "../Auth/AuthContext"
 
-/**
- * @typedef {Object} User
- * @property {string} [id] - User ID
- * @property {string} name - User name
- * @property {string} email - User email
- * @property {string} phone - User phone
- */
+import axios from 'axios';
 
-/**
- * @typedef {Object} AdminUsersProps
- * @property {User[]} [users] - Array of users
- */
+const API_URL = 'http://localhost:5500/api';
 
-export default function UserData({ users = [] }) {
+const getAllUsers = async (token) => {
+  try {
+    const response = await axios.get(`${API_URL}/users/allusers`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+}; 
+
+
+export default function UserData() {
   const [searchTerm, setSearchTerm] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const { token } = useAuth()
+  console.log('Current token:', token)
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setLoading(true)
+        if (!token) {
+          setError('No authentication token available')
+          return
+        }
+        const data = await getAllUsers(token)
+        setUsers(data)
+      } catch (err) {
+        setError(err.message || 'Failed to fetch users')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (token) {
+      fetchUsers()
+    }
+  }, [token])
 
   // Sample data for demonstration
   const sampleUsers = [
@@ -53,7 +88,7 @@ export default function UserData({ users = [] }) {
       (user) =>
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.phone.includes(searchTerm),
+        user.phone?.includes(searchTerm),
     )
 
     // Calculate pagination
@@ -158,88 +193,103 @@ export default function UserData({ users = [] }) {
 
         {/* Table */}
         <div className="p-6">
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 font-medium text-gray-900 w-16">#</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">
-                    <div className="flex items-center gap-2">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                        />
-                      </svg>
-                      Name
-                    </div>
-                  </th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">
-                    <div className="flex items-center gap-2">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                        />
-                      </svg>
-                      Email
-                    </div>
-                  </th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">
-                    <div className="flex items-center gap-2">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                        />
-                      </svg>
-                      Phone
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedUsers.length > 0 ? (
-                  paginatedUsers.map((user, index) => (
-                    <tr key={user.id || index} className="border-b border-gray-100 hover:bg-gray-50">
-                      <td className="py-3 px-4 font-medium text-gray-900">
-                        {(currentPage - 1) * pageSize + index + 1}
-                      </td>
-                      <td className="py-3 px-4 font-medium text-gray-900">{user.name}</td>
-                      <td className="py-3 px-4 text-gray-600">{user.email}</td>
-                      <td className="py-3 px-4 text-gray-600">{user.phone}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={4} className="text-center py-8">
-                      <div className="flex flex-col items-center gap-2">
-                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          {loading ? (
+            <div className="flex justify-center items-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+          ) : error ? (
+            <div className="text-center py-8">
+              <div className="text-red-600 mb-2">
+                <svg className="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <p className="text-gray-600">{error}</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-3 px-4 font-medium text-gray-900 w-16">#</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">
+                      <div className="flex items-center gap-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
-                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                           />
                         </svg>
-                        <p className="text-gray-500">No users found</p>
-                        {searchTerm && <p className="text-sm text-gray-400">Try adjusting your search terms</p>}
+                        Name
                       </div>
-                    </td>
+                    </th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">
+                      <div className="flex items-center gap-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                          />
+                        </svg>
+                        Email
+                      </div>
+                    </th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">
+                      <div className="flex items-center gap-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                          />
+                        </svg>
+                        Phone
+                      </div>
+                    </th>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {paginatedUsers.length > 0 ? (
+                    paginatedUsers.map((user, index) => (
+                      <tr key={user.id || index} className="border-b border-gray-100 hover:bg-gray-50">
+                        <td className="py-3 px-4 font-medium text-gray-900">
+                          {(currentPage - 1) * pageSize + index + 1}
+                        </td>
+                        <td className="py-3 px-4 font-medium text-gray-900">{user.name}</td>
+                        <td className="py-3 px-4 text-gray-600">{user.email}</td>
+                        <td className="py-3 px-4 text-gray-600">{user.phone}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={4} className="text-center py-8">
+                        <div className="flex flex-col items-center gap-2">
+                          <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                            />
+                          </svg>
+                          <p className="text-gray-500">No users found</p>
+                          {searchTerm && <p className="text-sm text-gray-400">Try adjusting your search terms</p>}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
 
           {/* Pagination Controls */}
-          {totalPages > 1 && (
+          {!loading && !error && totalPages > 1 && (
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 mt-4 border-t border-gray-200">
               <div className="text-sm text-gray-600">
                 Showing {(currentPage - 1) * pageSize + 1} to {Math.min(currentPage * pageSize, totalFilteredUsers)} of{" "}
@@ -303,3 +353,4 @@ export default function UserData({ users = [] }) {
     </div>
   )
 }
+

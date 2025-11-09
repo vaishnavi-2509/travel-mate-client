@@ -33,7 +33,8 @@ Built with a focus on **user experience**, **performance**, Travel Mate simplifi
 ### 🏠 Homepage  
 ![Homepage Screenshot](public/images/homepage.png)
 
-/public/images/destinations.png
+### 🌆 Destinations Page  
+![Destinations Screenshot](public/images/destinations.png)
 
 
 ---

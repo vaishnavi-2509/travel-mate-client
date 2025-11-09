@@ -100,7 +100,7 @@ const UpcomingTrips = () => {
               <div key={trip._id} className="min-w-[700px] snap-center group hover:shadow-2xl transition bg-white rounded-2xl hover:scale-[1.02] flex overflow-hidden">
                 {/* Image Section */}
                 <div className="relative w-2/5 overflow-hidden">
-                  <img src={trip.imageUrl || "/placeholder.svg"} alt={trip.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <img src={trip.imageUrl || "/bali.jpg"} alt={trip.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20" />
                   <div className="absolute top-4 left-4 flex flex-col gap-2">
                     {trip.tags.map((tag, idx) => (

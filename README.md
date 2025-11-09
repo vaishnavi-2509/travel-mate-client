@@ -3,15 +3,14 @@
 ## ✨ Overview  
 **Travel Mate** is a modern React-based travel planning web application that helps users explore destinations, find flights, create itineraries, and even connect with other travelers for group trips.  
 
-Built with a focus on **user experience**, **performance**, and **AI integration**, Travel Mate simplifies trip planning — from discovery to booking.
+Built with a focus on **user experience**, **performance**, Travel Mate simplifies trip planning — from discovery to booking.
 
 ---
 
 ## 🚀 Features  
 
 ✅ **Flight Search & Booking** – Integrated with Amadeus API for real-time flight data  
-✅ **Dynamic Itinerary Planner** – Day-by-day itinerary with maps, activities & custom trips  
-✅ **AI Travel Assistant** – Chatbot that suggests destinations & generates itineraries  
+✅ **Dynamic Itinerary Planner** – Day-by-day itinerary with maps, activities & custom trips   
 ✅ **Group Trip Planner** – Join or create trips with other travelers  
 ✅ **Modern UI** – Built with Tailwind CSS, Framer Motion & React Components  
 ✅ **Authentication & Authorization** – Secure login/signup system  
@@ -22,21 +21,18 @@ Built with a focus on **user experience**, **performance**, and **AI integration
 ## 🧰 Tech Stack  
 
 **Frontend:** React.js, Tailwind CSS, Framer Motion  
-**Backend:** Node.js, Express.js, MongoDB *(optional when backend is off)*  
+**Backend:** Node.js, Express.js, MongoDB  
 **API Integration:** Amadeus Flight Offers API, OpenAI API  
-**State Management:** Context API / Zustand  
-**Deployment:** Vercel / Netlify  
+**State Management:** Context API 
+**Deployment:** Vercel  
 
 ---
 
 ## 📸 Screenshots  
-*(Add screenshots of your app here)*  
-Example:  
-```
+
 /public/images/homepage.png  
-/public/images/itinerary.png  
-/public/images/chatbot.png  
-```
+/public/images/destinations.png
+
 
 ---
 
@@ -63,19 +59,6 @@ Open in browser:
 
 ---
 
-## 🔑 Environment Variables  
-
-Create a `.env` file in the root directory and add:  
-```
-VITE_AMADEUS_API_KEY=your_api_key
-VITE_AMADEUS_API_SECRET=your_api_secret
-VITE_OPENAI_API_KEY=your_openai_key
-```
-
-*(Backend not required for frontend-only view — images & static data will still display.)*
-
----
-
 ## 💡 Future Enhancements  
 - Add hotel & activity booking integration  
 - Include user dashboard for saved itineraries  
@@ -85,7 +68,7 @@ VITE_OPENAI_API_KEY=your_openai_key
 
 ## 👩‍💻 Author  
 **Vaishnavi Agrawal**  
-Frontend Developer | MERN Stack | Passionate about Travel Tech  
+Full Stack Developer | MERN Stack
 
-📧 your.email@example.com  
-🌐 [Your Portfolio or LinkedIn Profile]
+📧 agrawalvaishnavi2905@gmail.com 
+🌐 https://www.linkedin.com/in/vaishnavi-agrawal-a943192aa/
